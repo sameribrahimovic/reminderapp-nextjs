@@ -24,6 +24,13 @@ async function CollectionList() {
       </div>
     );
   }
+
+  return (
+    <div>
+      Collections: {collections.length}
+      <CreateCollectionButton />
+    </div>
+  );
 }
 
 export default CollectionList;

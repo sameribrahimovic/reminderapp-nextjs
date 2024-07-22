@@ -13,6 +13,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { useForm } from "react-hook-form";
@@ -32,6 +33,10 @@ import { CollectionColor, CollectionColors } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
+import { createCollection } from "@/actions/collection";
+import { toast } from "./ui/use-toast";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 interface Props {
   open: boolean;
@@ -44,12 +49,37 @@ function CreateCollectionSidebar({ open, onOpenChange }: Props) {
     resolver: zodResolver(createCollectionSchema),
   });
 
-  const onSubmit = (data: createCollectionSchemaType) => {
-    console.log(data);
+  const router = useRouter();
+
+  const onSubmit = async (data: createCollectionSchemaType) => {
+    // console.log("SUBMITED", data);
+    try {
+      await createCollection(data);
+      //close sidebar
+      openChangeWrapper(false);
+      router.refresh();
+
+      toast({
+        title: "Success",
+        description: "Collection created",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Something went wrong!",
+        variant: "destructive",
+      });
+    }
+  };
+
+  //reset form status
+  const openChangeWrapper = (open: boolean) => {
+    form.reset();
+    onOpenChange(open);
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={openChangeWrapper}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add new collection</SheetTitle>
@@ -67,9 +97,10 @@ function CreateCollectionSidebar({ open, onOpenChange }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="f.e. Work" />
+                    <Input placeholder="f.e. Work" {...field} />
                   </FormControl>
                   <FormDescription>Collection name</FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -109,8 +140,9 @@ function CreateCollectionSidebar({ open, onOpenChange }: Props) {
                     </Select>
                   </FormControl>
                   <FormDescription>
-                    Set color for your collection
+                    Select color for your collection
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -118,7 +150,20 @@ function CreateCollectionSidebar({ open, onOpenChange }: Props) {
         </Form>
         <div className="flex flex-col gap-3 mt-4">
           {/* <Separator /> */}
-          <Button variant={"outline"}>Confirm</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            variant={"outline"}
+            onClick={form.handleSubmit(onSubmit)}
+            className={cn(
+              form.watch("color") &&
+                CollectionColors[form.getValues("color") as CollectionColor]
+            )}
+          >
+            Confirm
+            {form.formState.isSubmitting && (
+              <ReloadIcon className="ml-2 h-4 w-4 animate-spin" />
+            )}
+          </Button>
         </div>
       </SheetContent>
     </Sheet>
