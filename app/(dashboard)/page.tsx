@@ -1,3 +1,4 @@
+import CollectionList from "@/components/CollectionList";
 import { Skeleton } from "@/components/ui/skeleton";
 import { currentUser } from "@clerk/nextjs/server";
 import { Suspense } from "react";
@@ -7,6 +8,9 @@ export default async function Home() {
     <>
       <Suspense fallback={<WelcomeMsgFallback />}>
         <WelcomeMsg />
+      </Suspense>
+      <Suspense fallback={<div>Loading collections...</div>}>
+        <CollectionList />
       </Suspense>
     </>
   );
@@ -20,7 +24,7 @@ async function WelcomeMsg() {
   }
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full mb-12">
       <h1 className="text-4xl font-bold">
         Welcome, <br /> {user?.firstName}
       </h1>
@@ -30,7 +34,7 @@ async function WelcomeMsg() {
 
 function WelcomeMsgFallback() {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full mb-12">
       <h1 className="text-4xl font-bold">
         <Skeleton className="w-[250px] h-[36px] mb-1" />
         <Skeleton className="w-[250px] h-[36px]" />
