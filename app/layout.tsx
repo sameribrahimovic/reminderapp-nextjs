@@ -28,7 +28,7 @@ export default function RootLayout({
       >
         <body>
           <ThemeProvider>
-            <div className="flex min-h-screen w-full flex-col items-center dark:bg-slate">
+            <div className="flex min-h-screen w-full flex-col items-center dark:bg-slate-900">
               <Navbar />
               <Separator />
               <main className="flex flex-grow w-full justify-center items-center dark:bg-neutral-950">
