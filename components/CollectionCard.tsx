@@ -1,7 +1,7 @@
 "use client";
 
 import { Collection } from "@prisma/client";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,6 +24,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { deleteCollection } from "@/actions/collection";
+import { toast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface Props {
   collection: Collection;
@@ -34,6 +37,24 @@ const tasks: string[] = ["Task 1", "Task 2"];
 
 function CollectionCard({ collection }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const [isLoading, startTransition] = useTransition();
+
+  const removeCollection = async () => {
+    try {
+      await deleteCollection(collection.id);
+      toast({
+        title: "Success",
+        description: "Collection deleted successfully",
+      });
+      router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Cannot delete collection",
+      });
+    }
+  };
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -59,7 +80,7 @@ function CollectionCard({ collection }: Props) {
             <Progress className="rounded-none" value={45} />
             <div className="p-4 gap-3 flex flex-col">
               {tasks.map((task) => (
-                <div>Mocked taks</div>
+                <div key={null}>Mocked taks</div>
               ))}
             </div>
           </>
@@ -67,30 +88,37 @@ function CollectionCard({ collection }: Props) {
         <Separator />
         <footer className="h-[40px] px-4 p-[2px] text-xs text-neutral-500 flex justify-between items-center">
           {/* here I use doDateString() insted of toLoaceDateStrig() to avoid hidration error */}
-          Created at {collection.createdAt.toDateString()}
-          <div>
-            <Button variant={"ghost"} size={"icon"}>
-              <Plus />
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant={"ghost"} size={"icon"}>
-                  <Trash />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogTitle>Are you sure ?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone! This will permanently delete
-                  your collection and all related tasks.
-                </AlertDialogDescription>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction>Delete</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+          <p>Created at {collection.createdAt.toDateString()}</p>
+          {isLoading && <div>Deleting...</div>}
+          {!isLoading && (
+            <div>
+              <Button variant={"ghost"} size={"icon"}>
+                <Plus />
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant={"ghost"} size={"icon"}>
+                    <Trash />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogTitle>Are you sure ?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone! This will permanently delete
+                    your collection and all related tasks.
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => startTransition(removeCollection)}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
         </footer>
       </CollapsibleContent>
     </Collapsible>
