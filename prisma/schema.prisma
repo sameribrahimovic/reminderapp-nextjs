@@ -18,7 +18,7 @@ model Collection {
   createdAt DateTime @default(now())
 
   //realtion with task model - 1 collection - many tasks
-  Task Task[]
+  tasks Task[]
 
   //user can not create two collection with the same name!
   @@unique([name, userId])
