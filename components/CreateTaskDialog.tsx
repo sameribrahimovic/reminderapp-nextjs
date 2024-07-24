@@ -1,3 +1,5 @@
+"use client";
+
 import { Collection } from "@prisma/client";
 import React from "react";
 import {
@@ -28,6 +30,9 @@ import { Button } from "./ui/button";
 import { CalendarIcon, ReloadIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
+import { createTask } from "@/actions/task";
+import { toast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface Props {
   open: boolean;
@@ -36,6 +41,7 @@ interface Props {
 }
 
 function CreateTaskDialog({ open, collection, setOpen }: Props) {
+  const router = useRouter();
   const form = useForm<createTaskSchemaType>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -44,10 +50,25 @@ function CreateTaskDialog({ open, collection, setOpen }: Props) {
   });
   const openChangeWrapper = (value: boolean) => {
     setOpen(value);
+    form.reset();
   };
 
   const onSubmit = async (data: createTaskSchemaType) => {
-    console.log("Submitted", data);
+    try {
+      await createTask(data);
+      toast({
+        title: "Success",
+        description: "Task created successfully",
+      });
+      openChangeWrapper(false);
+      router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Cannot create task",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -122,7 +143,7 @@ function CreateTaskDialog({ open, collection, setOpen }: Props) {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            // initialFocus
+                            initialFocus
                           />
                         </PopoverContent>
                       </Popover>

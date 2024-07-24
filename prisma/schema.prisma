@@ -28,7 +28,7 @@ model Task {
   id        Int       @id @default(autoincrement())
   content   String
   userId    String
-  done      Boolean
+  done      Boolean   @default(false)
   expiresAt DateTime?
   createdAt DateTime  @default(now())
 
