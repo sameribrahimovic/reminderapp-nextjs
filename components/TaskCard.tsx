@@ -1,10 +1,12 @@
 "use client";
 
 import { Task } from "@prisma/client";
-import React from "react";
+import React, { startTransition, useTransition } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { setTaskToDone } from "@/actions/task";
 
 //helper function
 
@@ -16,9 +18,22 @@ function getExpirationColor(expiresAt: Date) {
 }
 
 function TaskCard({ task }: { task: Task }) {
+  const [isLoading, startTransition] = useTransition();
+  const router = useRouter();
   return (
     <div className="flex gap-2 items-center">
-      <Checkbox className="w-5 h-5" checked={task.done} />
+      <Checkbox
+        id={task.id.toString()}
+        className="w-5 h-5"
+        checked={task.done}
+        disabled={task.done || isLoading}
+        onCheckedChange={() => {
+          startTransition(async () => {
+            await setTaskToDone(task.id);
+            router.refresh();
+          });
+        }}
+      />
       <label
         htmlFor={task.id.toString()}
         className={cn(
