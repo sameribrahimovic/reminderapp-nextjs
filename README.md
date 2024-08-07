@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+## Reminder application using NextJs
+![image](https://github.com/user-attachments/assets/aa3ea5db-426a-46ba-835d-3ce5f0fc0de1)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![image](https://github.com/user-attachments/assets/c5dae87e-b8f2-4a8b-855f-7376536db1cb)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies used
+- **Nextjs**
+- **Auth with Clerk**
+- **Typescript**
+- **Prisma ORM**
+- **Zod**
+- **React Hook Form**
+- **Server actions**
+- **Taiwind / Shadcn UI**
+- **Postgresql for db**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🌟 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Reminder app:** Keep track of your notes/todos.
+- **Task manage** Create and manage tasks.
+- **Theme Customization:** Light/dark mode.
 
-## Learn More
+## Contributing
+We welcome contributions to Budget Buddy! If you have any ideas, suggestions, or bug reports, feel free to open an issue or submit a pull request.
 
-To learn more about Next.js, take a look at the following resources:
+## Disclaimer
+This project is still in the stage of development and updates are being rolled out regularly so keep checking back for new things!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
